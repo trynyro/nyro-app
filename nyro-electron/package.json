@@ -1,0 +1,47 @@
+{
+  "name": "nyro",
+  "version": "1.0.1",
+  "description": "nyro electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development electron .",
+    "dist": "electron-builder",
+    "rebuild": "electron-rebuild",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.nyrollc.nyro",
+    "productName": "Nyro",
+    "mac": {
+      "target": "dmg",
+      "icon": "favicon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "favicon.ico"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "private": true,
+        "owner": "aayush-g1414",
+        "repo": "Nyro",
+        "token": "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"
+      }
+    ]
+  },
+  "author": "Nyro LLC",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^31.0.2",
+    "electron-builder": "^24.13.3",
+    "electron-rebuild": "^3.2.9"
+  },
+  "dependencies": {
+    "electron-clipboard-extended": "^1.1.1",
+    "electron-updater": "^6.2.1",
+    "node-powershell": "^5.0.1",
+    "robotjs": "^0.6.0"
+  }
+}

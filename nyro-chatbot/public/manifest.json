@@ -1,0 +1,15 @@
+{
+  "short_name": "Nyro",
+  "name": "Nyro",
+  "icons": [
+    {
+      "src": "/icon-96x39.png",
+      "type": "image/ico",
+      "sizes": "96x39"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#000000"
+}
