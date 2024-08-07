@@ -74,7 +74,8 @@ You will need to install Docker to run Supabase locally. You can download it [he
 **Windows**
 
 ```bash
-npm install supbase
+cd nyro-chatbot
+npm install supabase
 ```
 
 #### 3. Start Supabase
