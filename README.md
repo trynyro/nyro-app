@@ -1,6 +1,9 @@
 # Nyro: AI-Powered Desktop Productivity Tool
 
-https://github.com/user-attachments/assets/f8c87279-e2ba-4766-8be9-58461c7fbe55
+
+
+https://github.com/user-attachments/assets/8f5a5d48-de33-4576-9a4c-71e6be2ac3bb
+
 
 <h4 align="center">
   <a href="https://github.com/trynyro/nyro-app/blob/main/LICENSE">
