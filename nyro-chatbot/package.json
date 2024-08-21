@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "clean": "npm run lint:fix && npm run format:write",
     "dev": "next dev",
-    "build": "CI=false && next build",
+    "build": "CI=false && next build && rm -rf ./.next/cache",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
