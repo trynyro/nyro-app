@@ -32,10 +32,10 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
           ###### End of Repository/Build Configurations #####
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
-          SUPABASE_SERVICE_ROLE_KEY: ${{secrets.SUPABASE_SERVICE_ROLE_KEY}}
+        # env:
+        #   NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
+        #   NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
+        #   SUPABASE_SERVICE_ROLE_KEY: ${{secrets.SUPABASE_SERVICE_ROLE_KEY}}
 
 
   close_pull_request_job:
