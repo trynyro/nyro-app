@@ -24,7 +24,7 @@ interface RootLayoutProps {
     locale: string
   }
 }
-
+export const runtime = 'edge'
 export const metadata: Metadata = {
   applicationName: APP_NAME,
   title: {
