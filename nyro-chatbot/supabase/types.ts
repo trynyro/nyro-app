@@ -1129,6 +1129,7 @@ export type Database = {
           use_azure_openai: boolean
           user_id: string
           username: string
+          query_count: number
         }
         Insert: {
           anthropic_api_key?: string | null

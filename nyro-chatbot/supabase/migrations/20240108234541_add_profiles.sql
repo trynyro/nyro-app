@@ -35,6 +35,9 @@ CREATE TABLE IF NOT EXISTS profiles (
     openai_api_key TEXT CHECK (char_length(openai_api_key) <= 1000),
     openai_organization_id TEXT CHECK (char_length(openai_organization_id) <= 1000),
     perplexity_api_key TEXT CHECK (char_length(perplexity_api_key) <= 1000)
+
+    -- NEW COLUMN
+    query_count INT NOT NULL DEFAULT 0
 );
 
 -- INDEXES --
@@ -95,7 +98,7 @@ BEGIN
     random_username := 'user' || substr(replace(gen_random_uuid()::text, '-', ''), 1, 16);
 
     -- Create a profile for the new user
-    INSERT INTO public.profiles(user_id, anthropic_api_key, azure_openai_35_turbo_id, azure_openai_45_turbo_id, azure_openai_45_vision_id, azure_openai_api_key, azure_openai_endpoint, google_gemini_api_key, has_onboarded, image_url, image_path, mistral_api_key, display_name, bio, openai_api_key, openai_organization_id, perplexity_api_key, profile_context, use_azure_openai, username)
+    INSERT INTO public.profiles(user_id, anthropic_api_key, azure_openai_35_turbo_id, azure_openai_45_turbo_id, azure_openai_45_vision_id, azure_openai_api_key, azure_openai_endpoint, google_gemini_api_key, has_onboarded, image_url, image_path, mistral_api_key, display_name, bio, openai_api_key, openai_organization_id, perplexity_api_key, profile_context, use_azure_openai, username, query_count)
     VALUES(
         NEW.id,
         '',
@@ -116,7 +119,8 @@ BEGIN
         '',
         '',
         FALSE,
-        random_username
+        random_username,
+        0
     );
 
     -- Create the home workspace for the new user
@@ -149,6 +153,21 @@ CREATE TRIGGER delete_old_profile_image
 AFTER DELETE ON profiles
 FOR EACH ROW
 EXECUTE PROCEDURE delete_old_profile_image();
+
+CREATE OR REPLACE FUNCTION increment_query_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE profiles
+    SET query_count = query_count + 1
+    WHERE user_id = NEW.user_id;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER increment_query_count_trigger
+AFTER INSERT ON messages
+FOR EACH ROW
+EXECUTE PROCEDURE increment_query_count();
 
 -- STORAGE --
 
