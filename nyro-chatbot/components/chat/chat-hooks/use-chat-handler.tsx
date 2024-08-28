@@ -11,6 +11,8 @@ import { ChatMessage, ChatPayload, LLMID, ModelProvider } from "@/types"
 import { useRouter } from "next/navigation"
 import { useContext, useEffect, useRef } from "react"
 import { LLM_LIST } from "../../../lib/models/llm/llm-list"
+import { supabase } from "@/lib/supabase/browser-client"
+
 import {
   createTempMessages,
   handleCreateChat,
@@ -201,7 +203,22 @@ export const useChatHandler = () => {
       setIsPromptPickerOpen(false)
       setIsFilePickerOpen(false)
       setNewMessageImages([])
+      // Check the query count
+      const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("query_count")
+      .eq("user_id", profile!.user_id)
+      .single();
 
+      if (profileError) {
+        throw new Error(profileError.message);
+      }
+
+      console.log("profile", profileData);
+      if (profileData?.query_count >= 10) {
+        console.log("error!");
+        throw new Error("Query limit reached");
+      }
       const newAbortController = new AbortController()
       setAbortController(newAbortController)
 
