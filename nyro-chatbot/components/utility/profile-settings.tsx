@@ -55,7 +55,6 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
   } = useContext(NyroContext)
 
   const router = useRouter()
-
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   const [isOpen, setIsOpen] = useState(false)
@@ -333,9 +332,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
           </SheetHeader>
 
           <Tabs defaultValue="profile">
-            <TabsList className="mt-4 grid w-full grid-cols-2">
+            <TabsList className="mt-4 grid w-full grid-cols-1">
               <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="keys">API Keys</TabsTrigger>
+              {/* <TabsTrigger value="keys">API Keys</TabsTrigger> */}
             </TabsList>
 
             <TabsContent className="mt-4 space-y-4" value="profile">
@@ -431,7 +430,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
               </div>
             </TabsContent>
 
-            <TabsContent className="mt-4 space-y-4" value="keys">
+            {/* <TabsContent className="mt-4 space-y-4" value="keys">
               <div className="mt-5 space-y-2">
                 <Label className="flex items-center">
                   {useAzureOpenai
@@ -722,7 +721,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                   </>
                 )}
               </div>
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </div>
 
