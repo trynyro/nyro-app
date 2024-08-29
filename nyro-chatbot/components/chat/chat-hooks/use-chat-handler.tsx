@@ -33,6 +33,7 @@ export const useChatHandler = () => {
     setUserInput,
     setNewMessageImages,
     profile,
+    setProfile,
     setIsGenerating,
     setChatMessages,
     setFirstTokenReceived,
@@ -214,11 +215,25 @@ export const useChatHandler = () => {
         throw new Error(profileError.message);
       }
 
-      console.log("profile", profileData);
-      if (profileData?.query_count >= 10) {
-        console.log("error!");
-        throw new Error("Query limit reached");
+      if (profileData?.query_count >= 18) {
+        // throw new Error("Query limit reached");
+        if (chatSettings) {
+          const newChatSettings = { ...chatSettings };
+          newChatSettings.model = "llama3-8b-8192";
+          setChatSettings(newChatSettings);
+        }
+      } else if (chatSettings){
+        if (chatSettings) {
+          const newChatSettings = { ...chatSettings };
+          newChatSettings.model = "gpt-4-vision-preview";
+          // setProfile({
+          //   ...profile as any,
+          //   use_azure_openai: true
+          // });
+          setChatSettings(newChatSettings);
+        }
       }
+      
       const newAbortController = new AbortController()
       setAbortController(newAbortController)
 
@@ -236,6 +251,7 @@ export const useChatHandler = () => {
         ...availableOpenRouterModels
       ].find(llm => llm.modelId === chatSettings?.model)
 
+      console.log("chat",chatSettings)
       validateChatSettings(
         chatSettings,
         modelData,

@@ -7,6 +7,7 @@ import { FC, useContext, useEffect, useRef } from "react"
 import { Button } from "../ui/button"
 import { ChatSettingsForm } from "../ui/chat-settings-form"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { supabase } from "@/lib/supabase/browser-client"
 
 interface ChatSettingsProps {}
 
@@ -14,6 +15,7 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
   useHotkey("i", () => handleClick())
 
   const {
+    profile,
     chatSettings,
     setChatSettings,
     models,
@@ -31,19 +33,48 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
   }
 
   useEffect(() => {
-    if (!chatSettings) return
-
-    setChatSettings({
-      ...chatSettings,
-      temperature: Math.min(
-        chatSettings.temperature,
-        CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_TEMPERATURE || 1
-      ),
-      contextLength: Math.min(
-        chatSettings.contextLength,
-        CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_CONTEXT_LENGTH || 4096
-      )
-    })
+    const fetchProfileData = async () => {
+      if (!chatSettings) return
+  
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("query_count")
+        .eq("user_id", profile!.user_id)
+        .single();
+  
+      if (profileError) {
+        throw new Error(profileError.message);
+      }
+  
+      if (profileData?.query_count >= 18) {
+        setChatSettings({
+          ...chatSettings,
+          model: "llama3-8b-8192",
+          temperature: Math.min(
+            chatSettings.temperature,
+            CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_TEMPERATURE || 1
+          ),
+          contextLength: Math.min(
+            chatSettings.contextLength,
+            CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_CONTEXT_LENGTH || 4096
+          )
+        })
+      } else {
+        setChatSettings({
+          ...chatSettings,
+          temperature: Math.min(
+            chatSettings.temperature,
+            CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_TEMPERATURE || 1
+          ),
+          contextLength: Math.min(
+            chatSettings.contextLength,
+            CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_CONTEXT_LENGTH || 4096
+          )
+        })
+      }
+    }
+  
+    fetchProfileData();
   }, [chatSettings?.model])
 
   if (!chatSettings) return null
@@ -93,8 +124,8 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
     // </Popover>
     <>
       <div className="max-w-[120px] truncate text-lg sm:max-w-[300px] lg:max-w-[500px]">
-            {fullModel?.modelName}
-            {/* || chatSettings.model} */}
+            {chatSettings.model}
+            {/* || fullModel?.modelName} */}
           </div>
     </>
   )
