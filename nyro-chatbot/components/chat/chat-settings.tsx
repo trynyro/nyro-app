@@ -46,7 +46,15 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
         throw new Error(profileError.message);
       }
   
-      if (profileData?.query_count >= 18) {
+      const { data: userAuthData, error: userAuthDataError } = await supabase.auth.getUser();
+
+      const { data: subscriptionData, error: subscriptionError } = await supabase
+      .from("pro_subscription_emails" as any)
+      .select("subscribed")
+      .eq("email", userAuthData?.user?.email)
+      .single();
+
+      if (profileData?.query_count >= 18 && subscriptionData?.subscribed != true) {
         setChatSettings({
           ...chatSettings,
           model: "llama3-8b-8192",
@@ -60,17 +68,32 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
           )
         })
       } else {
-        setChatSettings({
-          ...chatSettings,
-          temperature: Math.min(
-            chatSettings.temperature,
-            CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_TEMPERATURE || 1
-          ),
-          contextLength: Math.min(
-            chatSettings.contextLength,
-            CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_CONTEXT_LENGTH || 4096
-          )
-        })
+        if (profileData?.query_count >= 58){
+          setChatSettings({
+            ...chatSettings,
+            model: "llama3-8b-8192",
+            temperature: Math.min(
+              chatSettings.temperature,
+              CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_TEMPERATURE || 1
+            ),
+            contextLength: Math.min(
+              chatSettings.contextLength,
+              CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_CONTEXT_LENGTH || 4096
+            )
+          })
+        } else {
+          setChatSettings({
+            ...chatSettings,
+            temperature: Math.min(
+              chatSettings.temperature,
+              CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_TEMPERATURE || 1
+            ),
+            contextLength: Math.min(
+              chatSettings.contextLength,
+              CHAT_SETTING_LIMITS[chatSettings.model]?.MAX_CONTEXT_LENGTH || 4096
+            )
+          })
+        }
       }
     }
   

@@ -215,7 +215,17 @@ export const useChatHandler = () => {
         throw new Error(profileError.message);
       }
 
-      if (profileData?.query_count >= 18) {
+      const { data: userAuthData, error: userAuthDataError } = await supabase.auth.getUser();
+
+
+      const { data: subscriptionData, error: subscriptionError } = await supabase
+      .from("pro_subscription_emails" as any)
+      .select("subscribed")
+      .eq("email", userAuthData?.user?.email)
+      .single();
+
+
+      if (profileData?.query_count >= 18 && subscriptionData?.subscribed != true) {
         // throw new Error("Query limit reached");
         if (chatSettings) {
           const newChatSettings = { ...chatSettings };
@@ -224,13 +234,19 @@ export const useChatHandler = () => {
         }
       } else if (chatSettings){
         if (chatSettings) {
-          const newChatSettings = { ...chatSettings };
-          newChatSettings.model = "gpt-4-vision-preview";
-          // setProfile({
-          //   ...profile as any,
-          //   use_azure_openai: true
-          // });
-          setChatSettings(newChatSettings);
+          if (profileData?.query_count >= 58) {
+            const newChatSettings = { ...chatSettings };
+            newChatSettings.model = "llama3-8b-8192";
+            setChatSettings(newChatSettings);
+          } else {
+            const newChatSettings = { ...chatSettings };
+            newChatSettings.model = "gpt-4-vision-preview";
+            // setProfile({
+            //   ...profile as any,
+            //   use_azure_openai: true
+            // });
+            setChatSettings(newChatSettings);
+          }
         }
       }
       
