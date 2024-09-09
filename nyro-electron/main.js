@@ -96,6 +96,7 @@ function expandWindow() {
     isRetracted = false;
     return true;
   } catch (error) {
+    console.log(error);
     return false;
   }
 }
@@ -355,6 +356,7 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+  console.log('window-all-closed');
 });
 
 app.on('will-quit', () => {
