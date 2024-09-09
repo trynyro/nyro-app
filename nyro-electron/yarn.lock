@@ -2086,7 +2086,7 @@ number-is-nan@^1.0.0:
   integrity sha512-4jbtZXNAsfZbAHiiqjLPBiCl16dES1zI4Hpzzxw61Tk+loF+sBDBKx1ICKKKwIqQ7M0mFn1TmkN7euSncWgHiQ==
 
 "nyro@file:":
-  version "0.1.0"
+  version "0.1.1"
   resolved "file:"
   dependencies:
     electron-clipboard-extended "^1.1.1"

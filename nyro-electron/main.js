@@ -57,7 +57,6 @@ function retractWindow() {
     mainWindow.webContents.send('retraction-state-changed', isRetracted, RETRACTED_WIDTH, RETRACTED_HEIGHT);
     return true;
   } catch (error) {
-    console.log("Error in retractWindow:", error);
     return false;
   }
 }
