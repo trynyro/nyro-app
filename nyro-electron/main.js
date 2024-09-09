@@ -7,8 +7,15 @@ const isDev = process.env.NODE_ENV !== 'production';
 const { PowerShell } = require("node-powershell");
 const fs = require('fs').promises;
 // const { autoUpdater } = require("electron-updater");
-const { updateElectronApp } = require('update-electron-app')
-updateElectronApp()
+const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
+updateElectronApp({
+  updateSource: {
+    type: UpdateSourceType.ElectronPublicUpdateService,
+    repo: 'trynyro/nyro-app'
+  },
+  updateInterval: '10 minutes',
+  logger: require('electron-log')
+})
 let mainWindow;
 let isProcessingShortcut = false;
 let isRetracted = false;
@@ -121,7 +128,7 @@ function createWindow() {
   lastExpandedPosition = [];
   mainWindow.loadURL(
     isDev
-      ? "http://localhost:3000/"
+      ? "https://nyro-app.vercel.app/"
       : `file://${path.join(__dirname, '../renderer/build/index.html')}`
   );
 
