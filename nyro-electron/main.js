@@ -13,7 +13,7 @@ let mainWindow;
 let isProcessingShortcut = false;
 let isRetracted = false;
 let lastExpandedPosition = [];
-let lastSize = null;
+let lastSize = [];
 let shortcutTimeout = null;
 let isPinned = false;
 // autoUpdater.autoDownload = false;
@@ -46,7 +46,7 @@ function retractWindow() {
 
   try {
     lastExpandedPosition = [...lastExpandedPosition, mainWindow.getPosition()];
-    lastSize = mainWindow.getSize();
+    lastSize = [...lastSize, mainWindow.getSize()];
 
     const retractedX = currentDisplay.workArea.x + width - RETRACTED_WIDTH;
     const retractedY = Math.round((height - RETRACTED_HEIGHT) / 2);
@@ -74,8 +74,9 @@ function expandWindow() {
     if (lastExpandedPosition && lastExpandedPosition[0][0] !== undefined && lastExpandedPosition[0][1] !== undefined) {
       mainWindow.setPosition(lastExpandedPosition[0][0], lastExpandedPosition[0][1]);
       lastExpandedPosition = [];
-      mainWindow.setSize(lastSize[0], lastSize[1]);
-      mainWindow.webContents.send("resize", { width: lastSize[0], height: lastSize[1] })
+      mainWindow.setSize(lastSize[0][0], lastSize[0][1]);
+      mainWindow.webContents.send("resize", { width: lastSize[0][0], height: lastSize[0][1] })
+      lastSize = [];
     } else {
       mainWindow.webContents.send('resize', { width: WINDOW_WIDTH, height: WINDOW_HEIGHT });
       mainWindow.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);

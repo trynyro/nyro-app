@@ -1,6 +1,6 @@
 {
   "name": "nyro",
-  "version": "1.0.1",
+  "version": "0.1.0",
   "description": "nyro electron app",
   "main": "main.js",
   "scripts": {
