@@ -6,17 +6,18 @@ const { exec } = require('child_process');
 const isDev = process.env.NODE_ENV !== 'production';
 const { PowerShell } = require("node-powershell");
 const fs = require('fs').promises;
-const { autoUpdater } = require("electron-updater");
-
+// const { autoUpdater } = require("electron-updater");
+const { updateElectronApp } = require('update-electron-app')
+updateElectronApp()
 let mainWindow;
 let isProcessingShortcut = false;
 let isRetracted = false;
-let lastExpandedPosition = null;
+let lastExpandedPosition = [];
 let lastSize = null;
 let shortcutTimeout = null;
 let isPinned = false;
-autoUpdater.autoDownload = false;
-autoUpdater.autoInstallOnAppQuit = true;
+// autoUpdater.autoDownload = false;
+// autoUpdater.autoInstallOnAppQuit = true;
 
 const WINDOW_WIDTH = 255;
 const WINDOW_HEIGHT = 445;
@@ -44,7 +45,7 @@ function retractWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   try {
-    lastExpandedPosition = mainWindow.getPosition();
+    lastExpandedPosition = [...lastExpandedPosition, mainWindow.getPosition()];
     lastSize = mainWindow.getSize();
 
     const retractedX = currentDisplay.workArea.x + width - RETRACTED_WIDTH;
@@ -56,6 +57,7 @@ function retractWindow() {
     mainWindow.webContents.send('retraction-state-changed', isRetracted, RETRACTED_WIDTH, RETRACTED_HEIGHT);
     return true;
   } catch (error) {
+    console.log("Error in retractWindow:", error);
     return false;
   }
 }
@@ -69,8 +71,9 @@ function expandWindow() {
   try {
     mainWindow.webContents.send('retraction-state-changed', isRetracted);
     
-    if (lastExpandedPosition && lastExpandedPosition[0] !== undefined && lastExpandedPosition[1] !== undefined) {
-      mainWindow.setPosition(lastExpandedPosition[0], lastExpandedPosition[1]);
+    if (lastExpandedPosition && lastExpandedPosition[0][0] !== undefined && lastExpandedPosition[0][1] !== undefined) {
+      mainWindow.setPosition(lastExpandedPosition[0][0], lastExpandedPosition[0][1]);
+      lastExpandedPosition = [];
       mainWindow.setSize(lastSize[0], lastSize[1]);
       mainWindow.webContents.send("resize", { width: lastSize[0], height: lastSize[1] })
     } else {
@@ -115,10 +118,10 @@ function createWindow() {
     fullscreenable: false,
   });
 
-  lastExpandedPosition = [initialX, initialY];
+  lastExpandedPosition = [];
   mainWindow.loadURL(
     isDev
-      ? "http://localhost:3000"
+      ? "https://nyro-app.vercel.app/"
       : `file://${path.join(__dirname, '../renderer/build/index.html')}`
   );
 
@@ -187,29 +190,29 @@ function createWindow() {
   });
 }
 
-autoUpdater.on("update-available", (info) => {
-  mainWindow.webContents.send("size", { txt: `No update available. Current version ${app.getVersion()}` });
-  mainWindow.webContents.send("updateMessage", `Update available. Current version ${app.getVersion()}`);
-  let pth = autoUpdater.downloadUpdate();
-  mainWindow.webContents.send("updateMessage", pth);
-});
+// autoUpdater.on("update-available", (info) => {
+//   mainWindow.webContents.send("size", { txt: `No update available. Current version ${app.getVersion()}` });
+//   mainWindow.webContents.send("updateMessage", `Update available. Current version ${app.getVersion()}`);
+//   let pth = autoUpdater.downloadUpdate();
+//   mainWindow.webContents.send("updateMessage", pth);
+// });
 
-autoUpdater.on("update-not-available", (info) => {
-  try{
-    mainWindow.webContents.send("size", { txt: `No update available. Current version ${app.getVersion()}` });
-    mainWindow.webContents.send("updateMessage", `No update available. Current version ${app.getVersion()}`);
-  } catch (error) {
-    console.log("Error in update-not-available. " + error);
-  }
-});
+// autoUpdater.on("update-not-available", (info) => {
+//   try{
+//     mainWindow.webContents.send("size", { txt: `No update available. Current version ${app.getVersion()}` });
+//     mainWindow.webContents.send("updateMessage", `No update available. Current version ${app.getVersion()}`);
+//   } catch (error) {
+//     console.log("Error in update-not-available. " + error);
+//   }
+// });
 
-autoUpdater.on("update-downloaded", (info) => {
-  mainWindow.webContents.send("updateMessage", `Update downloaded. Current version ${app.getVersion()}`);
-});
+// autoUpdater.on("update-downloaded", (info) => {
+//   mainWindow.webContents.send("updateMessage", `Update downloaded. Current version ${app.getVersion()}`);
+// });
 
-autoUpdater.on("error", (info) => {
-  mainWindow.webContents.send("updateMessage", info);
-});
+// autoUpdater.on("error", (info) => {
+//   mainWindow.webContents.send("updateMessage", info);
+// });
 
 async function getSelectedText() {
   const platform = os.platform();
@@ -336,7 +339,7 @@ app.whenReady().then(() => {
     }
   });
 
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
 });
 
 app.on('window-all-closed', () => {

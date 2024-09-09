@@ -2,3 +2,4 @@
 .env.local
 .env.development
 *.env
+/dist

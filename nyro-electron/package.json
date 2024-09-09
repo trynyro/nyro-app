@@ -19,16 +19,7 @@
     "win": {
       "target": "nsis",
       "icon": "favicon.ico"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "private": true,
-        "owner": "aayush-g1414",
-        "repo": "Nyro",
-        "token": "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"
-      }
-    ]
+    }
   },
   "author": "Nyro LLC",
   "license": "ISC",
@@ -42,6 +33,12 @@
     "electron-clipboard-extended": "^1.1.1",
     "electron-updater": "^6.2.1",
     "node-powershell": "^5.0.1",
-    "robotjs": "^0.6.0"
+    "nyro": "file:",
+    "robotjs": "^0.6.0",
+    "update-electron-app": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trynyro/nyro-app/tree/nyro-download"
   }
 }
