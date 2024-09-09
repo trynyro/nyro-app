@@ -9,7 +9,9 @@ const fs = require('fs').promises;
 // const { autoUpdater } = require("electron-updater");
 const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
 updateElectronApp({
+  
   updateSource: {
+    host: 'https://github.com',
     type: UpdateSourceType.ElectronPublicUpdateService,
     repo: 'trynyro/nyro-app'
   },
