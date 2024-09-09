@@ -15,8 +15,7 @@ updateElectronApp({
     type: UpdateSourceType.ElectronPublicUpdateService,
     repo: 'trynyro/nyro-app'
   },
-  updateInterval: '10 minutes',
-  logger: require('electron-log')
+  updateInterval: '10 minutes'
 })
 let mainWindow;
 let isProcessingShortcut = false;
@@ -66,6 +65,7 @@ function retractWindow() {
     mainWindow.webContents.send('retraction-state-changed', isRetracted, RETRACTED_WIDTH, RETRACTED_HEIGHT);
     return true;
   } catch (error) {
+    console.log(error);
     return false;
   }
 }

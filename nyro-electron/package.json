@@ -5,9 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
-    "dist": "electron-builder",
-    "rebuild": "electron-rebuild",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dist": "electron-builder"
   },
   "build": {
     "appId": "com.nyrollc.nyro",
@@ -19,7 +17,14 @@
     "win": {
       "target": "nsis",
       "icon": "favicon.ico"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "trynyro",
+        "repo": "nyro-app"
+      }
+    ]
   },
   "author": "Nyro LLC",
   "license": "ISC",
@@ -31,8 +36,6 @@
   },
   "dependencies": {
     "electron-clipboard-extended": "^1.1.1",
-    "electron-log": "^5.2.0",
-    "electron-updater": "^6.2.1",
     "node-powershell": "^5.0.1",
     "nyro": "file:",
     "robotjs": "^0.6.0",
@@ -40,6 +43,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/trynyro/nyro-app/tree/nyro-download"
+    "url": "https://github.com/trynyro/nyro-app"
   }
 }
