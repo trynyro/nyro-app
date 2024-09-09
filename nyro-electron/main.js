@@ -15,7 +15,8 @@ updateElectronApp({
     type: UpdateSourceType.ElectronPublicUpdateService,
     repo: 'trynyro/nyro-app'
   },
-  updateInterval: '10 minutes'
+  updateInterval: '10 minutes',
+  logger: require('electron-log')
 })
 let mainWindow;
 let isProcessingShortcut = false;
