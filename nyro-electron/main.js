@@ -121,7 +121,7 @@ function createWindow() {
   lastExpandedPosition = [];
   mainWindow.loadURL(
     isDev
-      ? "https://nyro-app.vercel.app/"
+      ? "http://localhost:3000/"
       : `file://${path.join(__dirname, '../renderer/build/index.html')}`
   );
 
