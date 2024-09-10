@@ -42,39 +42,10 @@ autoUpdater.autoDownload = false
   let progressBar
 
   // update available
-  // autoUpdater.on('update-available', () => {
-  //   logger.info('There is an update available')
-  //   dialog
-  //     .showMessageBox({
-  //       type: 'info',
-  //       title: 'Update available',
-  //       message: 'A new update is available of Readit app. Do you want to update now?',
-  //       buttons: ['Update', 'No']
-  //     })
-  //     .then((res) => {
-  //       if (res.response === 0) {
-  //         autoUpdater.downloadUpdate()
-  //         progressBar = new ProgressBar({
-  //           indeterminate: false,
-  //           text: 'Preparing data...',
-  //           detail: 'Wait...',
-  //           abortOnError: true,
-  //           closeOnComplete: false,
-  //           browserWindow: {
-  //             alwaysOnTop: true
-  //           }
-  //         })
-  //         progressBar
-  //           .on('completed', function () {
-  //             progressBar.detail = 'Updates has been downloaded. We are preparing your install.'
-  //           })
-  //           .on('progress', function (value) {
-  //             progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
-  //           })
-  //       }
-  //     })
-  //     .catch((err) => logger.info('There has been an error downloading the update' + err))
-  // })
+  autoUpdater.on('update-available', () => {
+    logger.info('There is an update available')
+    autoUpdater.downloadUpdate()
+  })
 
   // download progress
   autoUpdater.on('download-progress', (progressObj) => {
@@ -132,7 +103,7 @@ let isPinned = false;
 // autoUpdater.autoDownload = false;
 // autoUpdater.autoInstallOnAppQuit = true;
 
-const WINDOW_WIDTH = 455;
+const WINDOW_WIDTH = 255;
 const WINDOW_HEIGHT = 445;
 const RETRACTED_WIDTH = 30;
 const RETRACTED_HEIGHT = 150;
@@ -306,7 +277,7 @@ function createWindow() {
   checkAndApplyUpdates()
   setTimeout(() => {
     checkAndApplyUpdates()
-  }, 600000)
+  }, 120000)
 }
 
 // autoUpdater.on("update-available", (info) => {
