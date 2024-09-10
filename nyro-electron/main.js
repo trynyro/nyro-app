@@ -6,17 +6,121 @@ const { exec } = require('child_process');
 const isDev = process.env.NODE_ENV !== 'production';
 const { PowerShell } = require("node-powershell");
 const fs = require('fs').promises;
-// const { autoUpdater } = require("electron-updater");
-const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
-updateElectronApp({
+const { autoUpdater } = require("electron-updater");
+// const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
+// updateElectronApp({
   
-  updateSource: {
-    host: 'https://github.com',
-    type: UpdateSourceType.ElectronPublicUpdateService,
-    repo: 'trynyro/nyro-app'
-  },
-  updateInterval: '10 minutes'
-})
+//   updateSource: {
+//     host: 'https://github.com',
+//     type: UpdateSourceType.ElectronPublicUpdateService,
+//     repo: 'trynyro/nyro-app'
+//   },
+//   updateInterval: '10 minutes'
+// })
+
+const { dialog } = require('electron') 
+const ProgressBar = require('electron-progressbar')
+
+// set autoUpdater logger method to the electron log
+let logger = autoUpdater.logger
+
+// info
+//autoUpdater.logger.transports.file.level = 'info'
+
+// set autoDownload to false
+autoUpdater.autoDownload = false
+
+// main exported function
+ const checkAndApplyUpdates = () => {
+  // check and notify updates
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    dialog.showErrorBox('There was an error', err + ' occurred while trying to look for updates')
+    logger.info('There was an error with checking for updates: ' + err)
+  })
+
+  // define progressBar
+  let progressBar
+
+  // update available
+  autoUpdater.on('update-available', () => {
+    logger.info('There is an update available')
+    dialog
+      .showMessageBox({
+        type: 'info',
+        title: 'Update available',
+        message: 'A new update is available of Readit app. Do you want to update now?',
+        buttons: ['Update', 'No']
+      })
+      .then((res) => {
+        if (res.response === 0) {
+          autoUpdater.downloadUpdate()
+          progressBar = new ProgressBar({
+            indeterminate: false,
+            text: 'Preparing data...',
+            detail: 'Wait...',
+            abortOnError: true,
+            closeOnComplete: false,
+            browserWindow: {
+              alwaysOnTop: true
+            }
+          })
+          progressBar
+            .on('completed', function () {
+              progressBar.detail = 'Updates has been downloaded. We are preparing your install.'
+            })
+            .on('progress', function (value) {
+              progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
+            })
+        }
+      })
+      .catch((err) => logger.info('There has been an error downloading the update' + err))
+  })
+
+  // download progress
+  autoUpdater.on('download-progress', (progressObj) => {
+    // let log_message = 'Download speed: ' + progressObj.bytesPerSecond
+    // log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
+    // log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    // logger.info(log_message)
+    // Update the progress bar with the current progress
+    progressBar.value = progressObj.percent
+  })
+
+  // error
+  autoUpdater.on('error', (err) => {
+    dialog.showErrorBox(
+      'Update Error',
+      'An error occurred during the update process: ' + err.message
+    )
+    logger.error('An error occurred during the update process: ' + err.message)
+    if (progressBar) {
+      progressBar.close()
+      progressBar = undefined
+    }
+  })
+
+  // update downloaded
+  autoUpdater.on('update-downloaded', () => {
+    logger.info('Update downloaded')
+    if (progressBar) {
+      progressBar.close()
+      progressBar = undefined
+    }
+    dialog
+      .showMessageBox({
+        type: 'info',
+        title: 'Update ready',
+        message: 'Update has been downloaded. Do you want to quit and restart?',
+        buttons: ['Quit', 'Later']
+      })
+      .then((res) => {
+        if (res.response === 0) {
+          autoUpdater.quitAndInstall(false, true)
+        }
+      })
+  })
+}
+
 let mainWindow;
 let isProcessingShortcut = false;
 let isRetracted = false;
@@ -27,7 +131,7 @@ let isPinned = false;
 // autoUpdater.autoDownload = false;
 // autoUpdater.autoInstallOnAppQuit = true;
 
-const WINDOW_WIDTH = 455;
+const WINDOW_WIDTH = 255;
 const WINDOW_HEIGHT = 445;
 const RETRACTED_WIDTH = 30;
 const RETRACTED_HEIGHT = 150;
@@ -198,6 +302,10 @@ function createWindow() {
   ipcMain.handle('expand-window', async (event) => {
     return expandWindow();
   });
+
+  setTimeout(() => {
+    checkAndApplyUpdates()
+  }, 600000)
 }
 
 // autoUpdater.on("update-available", (info) => {

@@ -1,6 +1,6 @@
 {
   "name": "nyro",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "nyro electron app",
   "main": "main.js",
   "scripts": {
@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "electron-clipboard-extended": "^1.1.1",
+    "electron-progressbar": "^2.2.1",
+    "electron-updater": "^6.3.4",
     "node-powershell": "^5.0.1",
     "nyro": "file:",
     "robotjs": "^0.6.0",
