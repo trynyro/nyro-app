@@ -42,39 +42,39 @@ autoUpdater.autoDownload = false
   let progressBar
 
   // update available
-  autoUpdater.on('update-available', () => {
-    logger.info('There is an update available')
-    dialog
-      .showMessageBox({
-        type: 'info',
-        title: 'Update available',
-        message: 'A new update is available of Readit app. Do you want to update now?',
-        buttons: ['Update', 'No']
-      })
-      .then((res) => {
-        if (res.response === 0) {
-          autoUpdater.downloadUpdate()
-          progressBar = new ProgressBar({
-            indeterminate: false,
-            text: 'Preparing data...',
-            detail: 'Wait...',
-            abortOnError: true,
-            closeOnComplete: false,
-            browserWindow: {
-              alwaysOnTop: true
-            }
-          })
-          progressBar
-            .on('completed', function () {
-              progressBar.detail = 'Updates has been downloaded. We are preparing your install.'
-            })
-            .on('progress', function (value) {
-              progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
-            })
-        }
-      })
-      .catch((err) => logger.info('There has been an error downloading the update' + err))
-  })
+  // autoUpdater.on('update-available', () => {
+  //   logger.info('There is an update available')
+  //   dialog
+  //     .showMessageBox({
+  //       type: 'info',
+  //       title: 'Update available',
+  //       message: 'A new update is available of Readit app. Do you want to update now?',
+  //       buttons: ['Update', 'No']
+  //     })
+  //     .then((res) => {
+  //       if (res.response === 0) {
+  //         autoUpdater.downloadUpdate()
+  //         progressBar = new ProgressBar({
+  //           indeterminate: false,
+  //           text: 'Preparing data...',
+  //           detail: 'Wait...',
+  //           abortOnError: true,
+  //           closeOnComplete: false,
+  //           browserWindow: {
+  //             alwaysOnTop: true
+  //           }
+  //         })
+  //         progressBar
+  //           .on('completed', function () {
+  //             progressBar.detail = 'Updates has been downloaded. We are preparing your install.'
+  //           })
+  //           .on('progress', function (value) {
+  //             progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`
+  //           })
+  //       }
+  //     })
+  //     .catch((err) => logger.info('There has been an error downloading the update' + err))
+  // })
 
   // download progress
   autoUpdater.on('download-progress', (progressObj) => {
@@ -83,7 +83,7 @@ autoUpdater.autoDownload = false
     // log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
     // logger.info(log_message)
     // Update the progress bar with the current progress
-    progressBar.value = progressObj.percent
+    // progressBar.value = progressObj.percent
   })
 
   // error
@@ -100,7 +100,7 @@ autoUpdater.autoDownload = false
   })
 
   // update downloaded
-  autoUpdater.on('update-downloaded', () => {
+  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName, releaseDate, updateURL) => {
     logger.info('Update downloaded')
     if (progressBar) {
       progressBar.close()
@@ -109,9 +109,10 @@ autoUpdater.autoDownload = false
     dialog
       .showMessageBox({
         type: 'info',
-        title: 'Update ready',
-        message: 'Update has been downloaded. Do you want to quit and restart?',
-        buttons: ['Quit', 'Later']
+        title: 'Application Update',
+        message: process.platform === 'win32' ? releaseNotes : releaseName,
+        detail: 'A new version has been downloaded. Restart the application to apply the updates.',
+        buttons: ['Restart', 'Later']
       })
       .then((res) => {
         if (res.response === 0) {
@@ -131,7 +132,7 @@ let isPinned = false;
 // autoUpdater.autoDownload = false;
 // autoUpdater.autoInstallOnAppQuit = true;
 
-const WINDOW_WIDTH = 455;
+const WINDOW_WIDTH = 255;
 const WINDOW_HEIGHT = 445;
 const RETRACTED_WIDTH = 30;
 const RETRACTED_HEIGHT = 150;
