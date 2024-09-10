@@ -131,7 +131,7 @@ let isPinned = false;
 // autoUpdater.autoDownload = false;
 // autoUpdater.autoInstallOnAppQuit = true;
 
-const WINDOW_WIDTH = 255;
+const WINDOW_WIDTH = 455;
 const WINDOW_HEIGHT = 445;
 const RETRACTED_WIDTH = 30;
 const RETRACTED_HEIGHT = 150;
