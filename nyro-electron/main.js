@@ -303,7 +303,7 @@ function createWindow() {
   ipcMain.handle('expand-window', async (event) => {
     return expandWindow();
   });
-
+  checkAndApplyUpdates()
   setTimeout(() => {
     checkAndApplyUpdates()
   }, 600000)
